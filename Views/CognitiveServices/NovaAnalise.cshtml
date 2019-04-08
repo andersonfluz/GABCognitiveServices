@@ -1,0 +1,36 @@
+﻿@model Microsoft.AspNetCore.Http.IFormFile
+
+@{
+    ViewData["Title"] = "NovaAnalise";
+}
+
+<h1>Pesquisa Visual Computacional</h1>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="NovaAnalise" method="post" enctype="multipart/form-data">
+            <div>
+                <p>Busque sua imagem:</p>
+                <input type="file" name="upload" accept="image/*" />
+                <input type="submit" value="Upload" class="btn btn-primary" />
+            </div>
+        </form>
+        <hr />
+        <div>
+            <h4>Image Analysis</h4>
+            <h5>Imagem Upada</h5>
+            <img style="width: 80%; height: 80%;" src="@ViewBag.imageFile" />
+            <br>
+            <h5>Análise da Imagem</h5>
+            @Html.Raw("<pre style='white-space:pre-wrap;'>" + ViewBag.imageInfoStr + "</pre>")
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

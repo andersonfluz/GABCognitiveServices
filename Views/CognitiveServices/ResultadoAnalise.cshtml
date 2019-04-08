@@ -1,0 +1,15 @@
+﻿@model String
+
+@{
+    ViewData["Title"] = "ResultadoAnalise";
+}
+
+<h1>Resultado Analise</h1>
+
+<div>
+    <h4>Image Analysis</h4>
+    <hr />
+    @Html.Raw("<pre>" + ViewBag.imageInfo + "</pre>")
+    <br>
+    @*@<img src="ViewBag.imageFile" />*@
+</div>

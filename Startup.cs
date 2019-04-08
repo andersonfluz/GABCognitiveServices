@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace GABCognitiveServices
 {
@@ -29,6 +30,25 @@ namespace GABCognitiveServices
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Devlopment",
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+            });
+
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Cognitive Services",
+                    Description = "Swagger surface",
+                    Contact = new Contact { Name = "Anderson Souza", Email = "andersonfluz@outlook.com", Url = "https://medium.com/@andersonfluz" },
+                    License = new License { Name = "MIT", Url = "https://github.com/brunohbrito/CognitesServicesAzure-Example/blob/master/LICENSE" },
+                });
+
             });
 
 
@@ -57,7 +77,7 @@ namespace GABCognitiveServices
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=CognitiveServices}/{action=NovaAnalise}/{id?}");
             });
         }
     }
