@@ -10,6 +10,7 @@ using GABCognitiveServices.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Newtonsoft.Json;
 
 namespace GABCognitiveServices.Controllers
@@ -26,22 +27,18 @@ namespace GABCognitiveServices.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> NovaAnalise(IFormFile upload, String urlText )
+        public async Task<IActionResult> NovaAnalise(IFormFile upload, String urlText)
         {
-            if (upload != null) { 
+            if (upload != null)
+            {
                 try
                 {
                     ImageInfoViewModel imageInfo;
-                    byte[] imageByte;
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await upload.CopyToAsync(memoryStream);
-                        imageInfo = await new VisionService().MakeAnalysisRequest(memoryStream.ToArray());
-                        imageByte = memoryStream.ToArray();
-                    }
+                    imageInfo = await new VisionService().MakeAnalysisRequest(upload);                    
+                    ViewBag.imageFile = "data:" + upload.ContentType + ";base64, " + Convert.ToBase64String(imageInfo.imageByte, 0, imageInfo.imageByte.Length);
+                    imageInfo.imageByte = null;
                     String json = JsonConvert.SerializeObject(imageInfo, Formatting.Indented);
                     ViewBag.imageInfoStr = json;
-                    ViewBag.imageFile = "data:"+upload.ContentType+";base64, " + Convert.ToBase64String(imageByte, 0, imageByte.Length);
                     return View();
                 }
                 catch
@@ -54,9 +51,7 @@ namespace GABCognitiveServices.Controllers
                 try
                 {
                     ImageInfoViewModel imageInfo;
-                    var webClient = new WebClient();
-                    byte[] imageBytes = webClient.DownloadData(urlText);
-                    imageInfo = await new VisionService().MakeAnalysisRequest(imageBytes);
+                    imageInfo = await new VisionService().MakeAnalysisRequest(null, urlText);
                     String json = JsonConvert.SerializeObject(imageInfo, Formatting.Indented);
                     ViewBag.imageInfoStr = json;
                     ViewBag.imageFile = urlText;
@@ -66,7 +61,8 @@ namespace GABCognitiveServices.Controllers
                 {
                     return View();
                 }
-            }
+            }   
+            
         }
 
         

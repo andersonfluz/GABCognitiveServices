@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace GABCognitiveServices.Models
 {
-    public class ImageAnalysis
+    public class Word
     {
-        public int Id { get; set; }
-        public byte[] imageByte { get; set; }
+        public string boundingBox { get; set; }
+        public string text { get; set; }
     }
 }

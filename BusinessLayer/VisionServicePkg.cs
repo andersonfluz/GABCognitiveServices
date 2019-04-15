@@ -22,7 +22,7 @@ namespace GABCognitiveServices.BusinessLayer
             VisualFeatureTypes.Tags
         };
 
-        public async Task<ImageAnalysis> MakeAnalysisRequest(string remoteImageUrl, string localImagePath)
+        public async Task<ImageAnalysis> MakeAnalysisRequest(string localImagePath= null, string remoteImageUrl= null)
         {
             ComputerVisionClient computerVision = new ComputerVisionClient(
                 new ApiKeyServiceClientCredentials(subscriptionKey),
@@ -64,6 +64,7 @@ namespace GABCognitiveServices.BusinessLayer
 
             using (Stream imageStream = File.OpenRead(imagePath))
             {
+                
                 ImageAnalysis analysis = await computerVision.AnalyzeImageInStreamAsync(
                     imageStream, features);
                 return analysis;

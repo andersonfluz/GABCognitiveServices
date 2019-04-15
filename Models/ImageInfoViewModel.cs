@@ -13,7 +13,7 @@ namespace GABCognitiveServices.Models
         public Color color { get; set; }
         public string requestId { get; set; }
         public Metadata metadata { get; set; }
-        public string imageFileString { get; set; }
-        public string contentType { get; set; }
+        public byte[] imageByte { get; set; } 
+        public OpticalCharacterRecognition OCR { get; set; }
     }
 }
