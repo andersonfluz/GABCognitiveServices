@@ -32,26 +32,6 @@ namespace GABCognitiveServices
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("Devlopment",
-                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
-            });
-
-            services.AddSwaggerGen(s =>
-            {
-                s.SwaggerDoc("v1", new Info
-                {
-                    Version = "v1",
-                    Title = "Cognitive Services",
-                    Description = "Swagger surface",
-                    Contact = new Contact { Name = "Anderson Souza", Email = "andersonfluz@outlook.com", Url = "https://medium.com/@andersonfluz" },
-                    License = new License { Name = "MIT", Url = "https://github.com/brunohbrito/CognitesServicesAzure-Example/blob/master/LICENSE" },
-                });
-
-            });
-
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using GABCognitiveServices.BusinessLayer;
@@ -25,26 +26,46 @@ namespace GABCognitiveServices.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> NovaAnalise(IFormFile upload)
+        public async Task<IActionResult> NovaAnalise(IFormFile upload, String urlText )
         {
-            try
-            {
-                ImageInfoViewModel imageInfo;
-                byte[] imageByte;
-                using (var memoryStream = new MemoryStream())
+            if (upload != null) { 
+                try
                 {
-                    await upload.CopyToAsync(memoryStream);
-                    imageInfo = await new VisionService().MakeAnalysisRequest(memoryStream.ToArray());
-                    imageByte = memoryStream.ToArray();
+                    ImageInfoViewModel imageInfo;
+                    byte[] imageByte;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await upload.CopyToAsync(memoryStream);
+                        imageInfo = await new VisionService().MakeAnalysisRequest(memoryStream.ToArray());
+                        imageByte = memoryStream.ToArray();
+                    }
+                    String json = JsonConvert.SerializeObject(imageInfo, Formatting.Indented);
+                    ViewBag.imageInfoStr = json;
+                    ViewBag.imageFile = "data:"+upload.ContentType+";base64, " + Convert.ToBase64String(imageByte, 0, imageByte.Length);
+                    return View();
                 }
-                String json = JsonConvert.SerializeObject(imageInfo, Formatting.Indented);
-                ViewBag.imageInfoStr = json;
-                ViewBag.imageFile = "data:"+upload.ContentType+";base64, " + Convert.ToBase64String(imageByte, 0, imageByte.Length);
-                return View();
+                catch
+                {
+                    return View();
+                }
             }
-            catch
+            else
             {
-                return View();
+                try
+                {
+                    ImageInfoViewModel imageInfo;
+                    var webClient = new WebClient();
+                    byte[] imageBytes = webClient.DownloadData(urlText);
+                    imageInfo = await new VisionService().MakeAnalysisRequest(imageBytes);
+                    String json = JsonConvert.SerializeObject(imageInfo, Formatting.Indented);
+                    ViewBag.imageInfoStr = json;
+                    ViewBag.imageFile = urlText;
+                    return View();
+                }
+                catch
+                {
+                    return View();
+                }
             }
         }
 
