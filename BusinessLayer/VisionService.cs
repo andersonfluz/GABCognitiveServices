@@ -1,5 +1,6 @@
 ﻿using GABCognitiveServices.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,18 @@ using System.Threading.Tasks;
 
 namespace GABCognitiveServices.BusinessLayer
 {
+    
     public class VisionService
     {
-        const string subscriptionKey = "85e15b8ef97144cebb3e907c2ee8a7c3";
+        IConfiguration _iconfiguration;
+        string subscriptionKey = null;
+        public VisionService(IConfiguration iconfiguration)
+        {
+            _iconfiguration = iconfiguration;
+            subscriptionKey = _iconfiguration["subscriptionKey"];
+        }
+
+        
         //Como o serviço foi para o datacenter do Sul do Brasil é necessario que a url seja do local brazilsouth
         const string endPoint = "https://brazilsouth.api.cognitive.microsoft.com/vision/v1.0/analyze";
         public async Task<ImageInfoViewModel> MakeAnalysisRequest(IFormFile localFile = null, string remotePath = null)
